@@ -1,24 +1,30 @@
-import React from 'react';
-import logo from './logo.svg';
+import React, { useCallback, useState } from 'react';
 import './App.css';
+
+import { FileNode, root } from './data';
+
+const File: React.FC<FileNode> = ({ id, children }: FileNode) => {
+  const [showChildren, setShowChildren] = useState<boolean>(false);
+  const handleClick = useCallback(() => {
+    setShowChildren(!showChildren);
+  }, [showChildren, setShowChildren])
+
+  return (
+    <div>
+      <span onClick={handleClick}>
+        <h4 style={{ fontWeight: showChildren ? 'bold' : 'normal' }}>{id}</h4>
+      </span>
+      <div style={{ position: 'relative', display: 'flex', flexDirection: 'column', left: 25, borderLeft: '1px solid', paddingLeft: 15 }}>
+        {showChildren && (children ?? []).map((node: FileNode) => <File {...node}/>)}
+      </div>
+    </div>
+  )
+}
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div style={{ marginLeft: 15 }}>
+      <File {...root}/>
     </div>
   );
 }
